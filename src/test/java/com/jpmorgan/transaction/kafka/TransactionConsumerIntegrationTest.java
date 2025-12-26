@@ -5,13 +5,22 @@ import com.jpmorgan.transaction.service.TransactionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -25,6 +34,23 @@ import static org.mockito.Mockito.*;
     "port=9092"
 })
 class TransactionConsumerIntegrationTest {
+
+    @TestConfiguration
+    static class KafkaProducerTestConfig {
+        @Bean
+        public ProducerFactory<String, TransactionMessage> producerFactory() {
+            Map<String, Object> configProps = new HashMap<>();
+            configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+            configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+            configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+            return new DefaultKafkaProducerFactory<>(configProps);
+        }
+
+        @Bean
+        public KafkaTemplate<String, TransactionMessage> kafkaTemplate() {
+            return new KafkaTemplate<>(producerFactory());
+        }
+    }
 
     @Autowired
     private KafkaTemplate<String, TransactionMessage> kafkaTemplate;
