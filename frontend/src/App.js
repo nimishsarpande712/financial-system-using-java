@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_BASE = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080';
+const API_BASE = process.env.REACT_APP_BACKEND_URL || '/api';
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -19,9 +19,10 @@ function App() {
   const loadData = async () => {
     try {
       setLoading(true);
+      console.log('Loading data from:', API_BASE);
       const [usersRes, transactionsRes] = await Promise.all([
-        axios.get(`${API_BASE}/api/users`),
-        axios.get(`${API_BASE}/api/transactions`)
+        axios.get(`${API_BASE}/users`),
+        axios.get(`${API_BASE}/transactions`)
       ]);
       setUsers(usersRes.data);
       setTransactions(transactionsRes.data);
