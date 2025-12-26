@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:transactiondb
+  
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+logging:
+  level:
+    com.jpmorgan.transaction: DEBUG
+    org.springframework.kafka: DEBUG
+
+incentive:
+  api:
+    enabled: true
