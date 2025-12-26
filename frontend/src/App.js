@@ -2,7 +2,20 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_BASE = 'http://localhost:8081/api';
+// Smart API detection - works in both local and preview environments
+const getApiBase = () => {
+  const hostname = window.location.hostname;
+  
+  // If in preview environment (contains 'emergentagent.com' or 'preview')
+  if (hostname.includes('emergentagent.com') || hostname.includes('preview')) {
+    return '/api'; // Use relative path, backend is proxied
+  }
+  
+  // Local development
+  return 'http://localhost:8081/api';
+};
+
+const API_BASE = getApiBase();
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -19,7 +32,9 @@ function App() {
   const loadData = async () => {
     try {
       setLoading(true);
-      console.log('Calling API:', API_BASE);
+      console.log('API Base:', API_BASE);
+      console.log('Hostname:', window.location.hostname);
+      
       const [usersRes, transactionsRes] = await Promise.all([
         axios.get(`${API_BASE}/users`),
         axios.get(`${API_BASE}/transactions`)
