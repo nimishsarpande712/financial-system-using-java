@@ -59,4 +59,7 @@ Thumbs.db
 *.ear
 *.zip
 *.tar.gz
-*.rar
+*.rar-e 
+# Environment files
+*.env
+*.env.*
