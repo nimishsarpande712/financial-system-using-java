@@ -47,7 +47,7 @@ incentive:
     enabled: ${INCENTIVE_API_ENABLED:true}
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8001}
 
 management:
   endpoints:
